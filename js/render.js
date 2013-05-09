@@ -12,9 +12,9 @@ window.requestAnimFrame = (function () {
 define([], function () {
 
     return Class.extend({
-        init: function (Game) {
+        init: function (Game, CanvasObj) {
             this.game = Game;
-            this.canvas = document.getElementById('canvas');
+            this.canvas = CanvasObj;
             this.context = this.canvas.getContext('2d');
 
             this.TileHeight = 16;
