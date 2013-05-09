@@ -37,18 +37,19 @@ define([], function () {
                 Right: this.RightFlag,
                 Fall: this.FallFlag
             };
+            this.resetFlags();
+            return ret;
+        },
 
+        resetFlags: function(){
             this.RotateFlag = false;
             this.LeftFlag = false;
             this.RightFlag = false;
             this.FallFlag = false;
-
-            return ret;
         },
 
         parseInput: function (event) {
             var self = this;
-//            console.log('User pressed key', event.keyCode, 'app state is ',(this.app.isStopped?'PAUSED':'RUNNING'));
             if (this.app.isStopped) {
                 if (event.keyCode == self.keyboard.SPACE){
                     self.app.resume();
@@ -66,10 +67,6 @@ define([], function () {
                     case self.keyboard.UP:
                         this.RotateFlag = true;
                         break;
-                    case self.keyboard.S:
-                    case self.keyboard.DOWN:
-                        this.FallFlag = true;
-                        break;
                     case self.keyboard.A:
                     case self.keyboard.LEFT:
                         this.LeftFlag = true;
@@ -82,6 +79,8 @@ define([], function () {
                         self.game.ActiveBlock.TypeIndex = ++self.game.ActiveBlock.TypeIndex % 7;
                         break;
                     case self.keyboard.SPACE:
+                    case self.keyboard.S:
+                    case self.keyboard.DOWN:
                         this.FallFlag = true;
                         break;
                     case self.keyboard.ESC:
