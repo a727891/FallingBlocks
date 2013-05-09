@@ -1,0 +1,15 @@
+#http://pseudobry.com/js-test-driver-qunit-coverage-requirejs/
+
+load:
+- js/lib/require-jquery.js
+- js/lib/class.js
+
+test:
+- test/*.js
+
+serve:
+- js/main.js
+- js/app.js
+- js/game.js
+- js/input.js
+- js/render.js

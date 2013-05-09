@@ -107,8 +107,11 @@ require({
             }
 
 
-        }
+        },
 
+        "testNotifyUserComplete_Input":function(){
+            console.info("Input tests finished successfully");
+        }
 
     });
 });
