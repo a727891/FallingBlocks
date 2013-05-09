@@ -51,7 +51,7 @@ define([], function () {
             var self = this;
             if (this.app.isStopped) {
                 if (event.keyCode == self.keyboard.SPACE){
-                    self.app.resume();
+                    self.app.start();
                     return true;
                 }else{
                     return false

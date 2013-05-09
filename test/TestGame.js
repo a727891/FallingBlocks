@@ -21,10 +21,6 @@ require({
         },
 
 
-        "testNotifyUserComplete_Game":function(){
-            console.info("Game tests finished successfully");
-        }
-
     });
 });
 

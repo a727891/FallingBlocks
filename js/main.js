@@ -11,6 +11,14 @@ define(['jquery', 'lib/class', 'app', 'game', 'input', 'render' ],
                 FallingBlocksApp = app;
                 game = new Game();
                 input = new Input(app);
+                $(window).keydown(function (event) {
+                    if (input.parseInput(event)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    } else
+                        return true;
+                });
                 var canvas = document.getElementById('canvas');
                 renderer = new Renderer(game,canvas);
                 app.setObjects(game,input,renderer);

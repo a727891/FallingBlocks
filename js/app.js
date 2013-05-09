@@ -6,65 +6,55 @@ define([], function () {
             this.ready = false;
 
             this.isStopped = true;
-            this.currentTime = new Date().getTime();
+            this.hasNeverStarted = true;
+            this.currentTime = 0;
             this.lastTimeStep = this.currentTime;
 
-            console.info("App Created.")
+            this.game = {};
+            this.input = {};
+            this.renderer = {};
         },
 
-        setObjects: function (game,input,renderer) {
+        setObjects: function (Game,Input,Renderer) {
             var self = this;
-            self.game = game;
-            //Creates a new Input class
-            self.input = input;
-            $(window).keydown(function (event) {
-                //Prevent game command input when game is paused
-//                if (!self.isStopped)
-                    if (self.input.parseInput(event)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return false;
-                    } else
-                        return true;
-//                else
-//                    return true;
-            });
-            //Create a new Renderer Object
-            self.renderer = renderer;
+            self.game = Game;
+            self.input = Input;
+            self.renderer = Renderer;
 
             this.ready = true;
         },
 
         tick: function () {
             var self = this;
-            this.currentTime = new Date().getTime();
-            var input = self.input.readInput();
-            self.game.updateState(input);
-            self.renderer.render(self.isStopped);
+            if(self.ready){
+                self.currentTime = new Date().getTime();
+                self.game.updateState(self.input.readInput());
+                self.renderer.render(self.isStopped);
 
-            if (!self.isStopped) {
-//                console.log('request anim frame tick,',this.currentTime);
-                requestAnimFrame(self.tick.bind(self));
+                if (!self.isStopped) {
+                    requestAnimFrame(self.tick.bind(self));
+                }
+                self.lastTimeStep = self.currentTime;
             }
         },
 
         start: function () {
-            this.isStopped = false;
-            this.tick();
-            this.hasNeverStarted = false;
-            console.info("APP: Game loop started.");
+            if(this.ready){
+                this.isStopped = false;
+                this.tick();
+                this.hasNeverStarted = false;
+                console.info("APP: Game loop started.");
+            }else{
+                console.info("APP: Not .ready, unable to start.");
+            }
+
         },
 
         stop: function () {
-            this.isStopped = true;
-            console.log("APP: Game loop paused");
-//            console.dir(this);
-        },
-
-        resume: function () {
-            this.isStopped = false;
-            this.tick();
-            console.log("APP: Game loop resumed.");
+            if(!this.isStopped){
+                this.isStopped = true;
+                console.log("APP: Game loop paused");
+            }
         },
 
 

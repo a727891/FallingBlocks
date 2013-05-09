@@ -6,7 +6,7 @@ require({
         'stop': function () {
             return true;
         },
-        'resume': function () {
+        'start': function () {
             return true;
         },
         'isStopped': false,
@@ -108,10 +108,6 @@ require({
 
 
         },
-
-        "testNotifyUserComplete_Input":function(){
-            console.info("Input tests finished successfully");
-        }
 
     });
 });
