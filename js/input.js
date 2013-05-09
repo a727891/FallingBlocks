@@ -4,7 +4,6 @@ define([], function () {
 
         init: function (APP) {
             this.app = APP;
-            this.game = APP.game;
             this.name = "input";
             this.keyboard = {};
 
@@ -76,7 +75,7 @@ define([], function () {
                         this.RightFlag = true;
                         break;
                     case self.keyboard.N:
-                        self.game.ActiveBlock.TypeIndex = ++self.game.ActiveBlock.TypeIndex % 7;
+                        self.app.game.ActiveBlock.TypeIndex = ++self.app.game.ActiveBlock.TypeIndex % 7;
                         break;
                     case self.keyboard.SPACE:
                     case self.keyboard.S:

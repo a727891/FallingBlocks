@@ -1,7 +1,6 @@
 define([], function () {
     return Class.extend({
-        init: function (APP) {
-            this.app = APP;
+        init: function () {
             this.ready = false;
             this.started = false;
             this.hasNeverStarted = true;
@@ -254,25 +253,25 @@ define([], function () {
         },
 
         initWell: function () {
-            for (var j = 0; j <= this.WellHeight; j++) {
+            for (var j = 0; j < this.WellHeight; j++) {
                 this.Well[j] = [];
-                for (var i = 0; i <= this.WellWidth; i++) {
+                for (var i = 0; i < this.WellWidth; i++) {
                     this.Well[j][i] = 0;
                 }
             }
         },
 
-        updateState: function(input){
-            if(input.FallFlag){
+        updateState: function (input) {
+            if (input.FallFlag) {
                 console.log("User wants to fast fall");
             }
-            if(input.RotateFlag){
+            if (input.RotateFlag) {
                 console.log("User wants to rotate");
             }
-            if(input.LeftFlag){
+            if (input.LeftFlag) {
                 console.log("User wants to move left");
             }
-            if(input.RightFlag){
+            if (input.RightFlag) {
                 console.log("User wants to move right");
             }
 
@@ -280,7 +279,7 @@ define([], function () {
         },
 
         newBlock: function () {
-
+            return Math.random() * 10 % this.blockCount;
         },
 
         rotateBlock: function () {

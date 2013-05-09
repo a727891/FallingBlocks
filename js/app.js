@@ -1,4 +1,4 @@
-define(['jquery', 'input', 'render'], function ($, INPUT, RENDERER) {
+define([], function () {
 
     return Class.extend({
         init: function () {
@@ -12,11 +12,11 @@ define(['jquery', 'input', 'render'], function ($, INPUT, RENDERER) {
             console.info("App Created.")
         },
 
-        setGame: function (game) {
+        setObjects: function (game,input,renderer) {
             var self = this;
             self.game = game;
             //Creates a new Input class
-            self.input = new INPUT(self);
+            self.input = input;
             $(window).keydown(function (event) {
                 //Prevent game command input when game is paused
 //                if (!self.isStopped)
@@ -30,7 +30,7 @@ define(['jquery', 'input', 'render'], function ($, INPUT, RENDERER) {
 //                    return true;
             });
             //Create a new Renderer Object
-            self.renderer = new RENDERER(self.game);
+            self.renderer = renderer;
 
             this.ready = true;
         },
