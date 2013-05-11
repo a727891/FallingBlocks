@@ -335,7 +335,7 @@ define([], function () {
                             //Pop the deleted rows lowering well contents above
                             var RowCount = 0;
                             while (this.deleteRow.length > 0) {
-                                this.popDeletedRow(this.deleteRow.shift());
+                                this.popDeletedRow(this.deleteRow.pop());
                                 RowCount++;
                             }
                             this.UpdateScore(RowCount);

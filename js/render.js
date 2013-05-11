@@ -20,17 +20,17 @@ define([], function () {
             this.TileHeight = 16;
             this.TileWidth = 16;
 
-            this.CellSpacing = 0;
+            this.CellSpacing = 1;
 
             this.WellOffsetLeft = this.TileWidth;
             this.WellOffsetTop = this.TileHeight;
 
-            this.NextBlockTop = this.TileHeight * 2 +this.WellOffsetTop;
-            this.NextBlockLeft = (this.TileWidth *this.game.WellWidth);
+            this.NextBlockTop = this.TileHeight * 2 + this.WellOffsetTop;
+            this.NextBlockLeft = (this.TileWidth * this.game.WellWidth);
 
 
-            this.ScoreTop = this.NextBlockTop+(this.TileHeight*5)+20;
-            this.ScoreLeft =this.NextBlockLeft+this.WellOffsetLeft+this.TileWidth;
+            this.ScoreTop = this.NextBlockTop + (this.TileHeight * 5) + 20;
+            this.ScoreLeft = this.NextBlockLeft + this.WellOffsetLeft + this.TileWidth;
 
             this.Debug_Collision = false;
             this.Debug_Collision_Color = "pink";
@@ -47,13 +47,13 @@ define([], function () {
                     msg = "Game Paused.";
                     msg2 = "Press [SPACE] to begin";
                     self.printMessage(msg, msg2);
-                    self.drawScore(self.game.points,self.game.level,self.game.linesCleared,self.game.linesUntilNextLevel);
+                    self.drawScore(self.game.points, self.game.level, self.game.linesCleared, self.game.linesUntilNextLevel);
                 } else {
                     self.drawWell();
                     if (self.game.State == self.game.running)
                         self.drawBlock(self.game.ActiveBlock, true);
                     self.drawBlock(self.game.NextBlock, false);
-                    self.drawScore(self.game.points,self.game.level,self.game.linesCleared,self.game.linesUntilNextLevel);
+                    self.drawScore(self.game.points, self.game.level, self.game.linesCleared, self.game.linesUntilNextLevel);
                 }
             } else {
                 msg = "Game Over.";
@@ -61,7 +61,6 @@ define([], function () {
                 self.printMessage(msg, msg2);
 
             }
-
 
 
         },
@@ -72,19 +71,20 @@ define([], function () {
             msg2 = msg2 || '';
             msgLen = self.context.measureText(msg).width;
             msgLen2 = self.context.measureText(msg2).width;
-            midWell = (self.TileHeight * (self.game.WellHeight) / 2)+this.WellOffsetTop;
+            midWell = (self.TileHeight * (self.game.WellHeight) / 2) + this.WellOffsetTop;
             crossWell = self.TileWidth * self.game.WellWidth;
             centerMsg = Math.floor((crossWell - msgLen) / 2);
             centerMsg2 = Math.floor((crossWell - msgLen2) / 2);
             self.context.fillStyle = "blue";
             self.context.fillRect(this.WellOffsetLeft, midWell - 25, crossWell, 40);
             self.context.fillStyle = "yellow";
-            self.context.fillText(msg, centerMsg+this.WellOffsetLeft, midWell - 10);
-            self.context.fillText(msg2, centerMsg2+this.WellOffsetLeft, midWell + 10);
+            self.context.fillText(msg, centerMsg + this.WellOffsetLeft, midWell - 10);
+            self.context.fillText(msg2, centerMsg2 + this.WellOffsetLeft, midWell + 10);
         },
 
         drawWell: function (ignoreRealWell) {
             ignoreRealWell = ignoreRealWell || 0;
+            //Hide the top 2 rows
             for (var j = 2; j < this.game.WellHeight; j++) {
                 for (var i = 0; i < this.game.WellWidth; i++) {
                     this.drawTile(
@@ -133,13 +133,13 @@ define([], function () {
 
         },
 
-        drawScore: function(points,level, linesCleared, linesUntilNext){
+        drawScore: function (points, level, linesCleared, linesUntilNext) {
             this.context.save();
             this.context.fillStyle = 'white';
-            this.context.fillText("Points:"+points,this.ScoreLeft,this.ScoreTop);
-            this.context.fillText("Lines cleared:"+linesCleared,this.ScoreLeft,this.ScoreTop+10);
-            this.context.fillText("Level:"+level,this.ScoreLeft,this.ScoreTop+20);
-            this.context.fillText("Lines to next:"+linesUntilNext,this.ScoreLeft,this.ScoreTop+30);
+            this.context.fillText("Points:" + points, this.ScoreLeft, this.ScoreTop);
+            this.context.fillText("Lines cleared:" + linesCleared, this.ScoreLeft, this.ScoreTop + 10);
+            this.context.fillText("Level:" + level, this.ScoreLeft, this.ScoreTop + 20);
+            this.context.fillText("Lines to next:" + linesUntilNext, this.ScoreLeft, this.ScoreTop + 30);
 
             this.context.restore();
         },
