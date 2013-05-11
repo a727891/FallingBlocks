@@ -6,7 +6,7 @@ define(['jquery', 'lib/class', 'app', 'game', 'input', 'render' ],
         var initApp = function () {
             $(document).ready(function () {
 
-                console.info("Create a new app instance...");
+//                console.info("Create a new app instance...");
                 app = new App();
                 FallingBlocksApp = app;
                 game = new Game();
@@ -22,7 +22,7 @@ define(['jquery', 'lib/class', 'app', 'game', 'input', 'render' ],
                 var canvas = document.getElementById('canvas');
                 renderer = new Renderer(game,canvas);
                 app.setObjects(game,input,renderer);
-                app.start();
+                renderer.render(true);
 
             })
         };

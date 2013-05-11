@@ -1,17 +1,22 @@
 define([], function () {
     return Class.extend({
         init: function () {
-            this.ready = false;
-            this.started = false;
-            this.hasNeverStarted = true;
-            this.currentTime = null;
+            this.hasNeverStarted = 1;
+            this.running = 2;
+            this.deletingRow = 4;
+            this.gameOver = 8;
+            this.State = this.hasNeverStarted;
 
-            this.WellWidth = 7;
-            this.WellHeight = 8;
+            this.deleteRow = [];
+            this.deleteRowCnt = 0;
+
+            this.WellWidth = 10;
+            this.WellHeight = 22; //Top two rows will not be rendered
 
             this.Well = [];
-            this.FramesSinceLastFall = 0;
-            this.FramesToWaitUntilFall = 60;
+            this.FramesSinceLastAction = 0;
+            this.DropBlockFramesToWait = 60;
+            this.DeleteRowFramesPerCell = 5;
 
             /**
              * Contains block definition
@@ -241,25 +246,133 @@ define([], function () {
             this.blockCount = this.blocks.length;
             this.orientationCount = 4;
 
+
+            this.pointsPerLine = [0,100,200,300,400];
+            this.linesPerLevel = [0,2,10,20,40];
+            this.pointsPerLevelMultiplier = 2;
+            this.level = 0;
+            this.linesCleared = 0;
+            this.linesUntilNextLevel = this.linesPerLevel[this.level+1]-this.linesCleared;
+            this.points = 0;
+
+            this.newGame();
+
+        },
+
+        newGame: function () {
+
             this.ActiveBlock = this.newBlock();
             this.NextBlock = this.newBlock();
 
             this.initWell();
-//            console.info("Game Created."+JSON.stringify(this.ActiveBlock)+JSON.stringify(this.NextBlock));
+
+            this.State = this.running;
+
+            this.level = 0;
+            this.linesCleared = 0;
+            this.linesUntilNextLevel = 0;
+            this.points = 0;
+
+
         },
 
         initWell: function () {
-            for (var j = 0; j < this.WellHeight; j++) {
-                this.Well[j] = [];
-                for (var i = 0; i < this.WellWidth; i++) {
-                    this.Well[j][i] = 0;
-                }
+            var emptyRow = [];
+            for (var i = 0; i < this.WellWidth; i++) {
+                emptyRow.push(0);
             }
-            this.Well[6][1] = 1;
+            this.Well = [];
+            for (var j = 0; j < this.WellHeight; j++) {
+                this.Well[j] = emptyRow.slice(0);
+            }
         },
 
         updateState: function (input) {
-            this.FramesSinceLastFall++;
+            this.FramesSinceLastAction++;
+
+            switch (this.State) {
+                case this.running:
+                    this.performBlockOperations(input);
+                    //Wait for correct delay before lowering the current block
+                    if (this.FramesSinceLastAction >= this.DropBlockFramesToWait) {
+                        //Attempt to lower the active block
+                        if (!this.dropBlock()) {
+                            //Block cannot fall any farther
+                            if (this.lockBlock(this.ActiveBlock)) {
+                                //Block is added to field, attempt to score any complete rows
+                                if (this.checkCompleteRows(this.ActiveBlock)) {
+                                    this.deleteRowCnt = 0;
+                                    this.State = this.deletingRow;
+                                } else {
+                                    //No state transition, give user the next block
+                                    this.ActiveBlock = this.NextBlock;
+                                    this.NextBlock = this.newBlock();
+                                }
+                            } else {
+                                //Block exceeds the game field, game over
+                                this.State = this.gameOver;
+                            }
+                        }
+                        this.FramesSinceLastAction = 0;
+                    }
+                    break;
+                case this.deletingRow:
+                    if (this.FramesSinceLastAction >= this.DeleteRowFramesPerCell) {
+                        //Still deleting the scored rows
+                        var i, j;
+                        if (this.deleteRowCnt < this.WellWidth) {
+                            for (i = 0, j = this.deleteRow.length; i < j; i++) {
+                                if (this.Well[this.deleteRow[i]]) {
+                                    if (i % 2) {
+                                        this.Well[this.deleteRow[i]][this.deleteRowCnt] = 0;
+                                    } else {
+                                        this.Well[this.deleteRow[i]][this.WellWidth - this.deleteRowCnt] = 0;
+                                    }
+                                }
+                            }
+                        } else {
+                            //Time to transition back to running
+                            //Pop the deleted rows lowering well contents above
+                            var RowCount = 0;
+                            while (this.deleteRow.length > 0) {
+                                this.popDeletedRow(this.deleteRow.shift());
+                                RowCount++;
+                            }
+                            this.UpdateScore(RowCount);
+                            //Give user the next block
+                            this.ActiveBlock = this.NextBlock;
+                            this.NextBlock = this.newBlock();
+                            this.State = this.running;
+                        }
+                        this.deleteRowCnt++;
+                        this.FramesSinceLastAction = 0;
+                    }
+                    break;
+            }
+        },
+
+        UpdateScore: function(RowsCleared){
+//            this.pointsPerLine = [0,100,200,300,400];
+//            this.linesPerLevel = [0,2,10,20,40];
+//            this.pointsPerLevelMultiplier = 2;
+//            this.level = 0;
+//            this.linesCleared = 0;
+//            this.linesUntilNextLevel = this.linesPerLevel[this.level+1]-this.linesCleared;
+//            this.points = 0;
+            this.linesCleared+=RowsCleared;
+            var isAnotherLevel = (this.linesPerLevel[this.level+1])
+
+
+
+        },
+
+        popDeletedRow: function (row) {
+            for (var i = row; i > 0; i--) {
+                this.Well[i] = this.Well[i - 1];
+            }
+        },
+
+        performBlockOperations: function (input) {
             if (input.Rotate == true) {
                 this.rotateBlock();
             }
@@ -273,51 +386,59 @@ define([], function () {
             }
 
             if (input.Fall == true) {
-                this.FramesSinceLastFall += 30;
-            }
-
-            if (this.FramesSinceLastFall >= this.FramesToWaitUntilFall) {
-                if (!this.dropBlock()) {
-                    this.lockBlock(this.ActiveBlock);
-//                    FallingBlocksApp.stop();
-                    this.ActiveBlock = this.NextBlock;
-                    this.NextBlock = this.newBlock();
-                }
-                this.FramesSinceLastFall = 0;
+                this.FramesSinceLastAction += this.DropBlockFramesToWait;
             }
         },
 
         lockBlock: function (block) {
-            console.log("Lock the block");
             var x , y ,
                 pieces = this.blocks[block.TypeIndex]['orientations'][block.orientation];
-//            console.log(x, y, pieces);
-//            console.dir(this.Well);
+
             for (var j = pieces.length - 1; j >= 0; j--) {
                 y = block.y + j;
                 for (var i = 0; i < pieces[j].length; i++) {
                     x = block.x + i;
-                    if (pieces[j][i] > 0) {
-//                        console.log(j, y, j + y, ':', i, x, i + x);
-//                        if (this.Well[y] && this.Well[ y][ x]) {
-                            console.log("locking well ",y,x);
-                            this.Well[y][ x] = 1;
-//                        } else {
-//                            console.log("No well space ",y,x);
-//                        }
+                    if (pieces[i][j] > 0) {
+                        if (y < 2) {
+                            //If any of the piece is over the "top" of the well, return false
+                            return false;
+                        }
+                        this.Well[y][x] = this.blocks[block.TypeIndex]['color'];
                     }
                 }
             }
-            console.dir(this.Well);
+            return true;
 
+        },
+
+        checkCompleteRows: function (block) {
+            var pieces = this.blocks[block.TypeIndex]['orientations'][block.orientation],
+                checkRow = false,
+                TransitionToDelete = false;
+            for (var j = pieces.length - 1; j >= 0; j--) {
+                y = block.y + j;
+                checkRow = (this.Well[y] != undefined);
+                for (var i = 0; i < this.WellWidth && checkRow; i++) {
+                    if (this.Well[y][i] == 0) {
+                        checkRow = false;
+                    }
+                }
+                if (checkRow) {
+                    console.log("need to delete row ", y);
+                    this.deleteRow.push(y);
+                    TransitionToDelete = true;
+                }
+            }
+            return TransitionToDelete;
         },
 
         newBlock: function () {
             return  {
-                x: 0,
-                y: 0,
-//                TypeIndex: Math.floor((Math.random()*100)%this.blockCount),
-                TypeIndex: 0,
+                x: Math.floor((this.WellWidth-1)/2)-2,
+//                x: 0,
+                y: -2,
+                TypeIndex: Math.floor((Math.random()*100)%this.blockCount),
+//                TypeIndex: 2,
                 orientation: 0,
             };
         },
@@ -325,7 +446,6 @@ define([], function () {
         dropBlock: function () {
             var self = this,
                 block = this.ActiveBlock;
-//            console.log("Drop block from(", block.x, block.y, ') to (', block.x, block.y + 1, ')');
             if (self.checkCollision(block.x, block.y + 1, block.TypeIndex, block.orientation)) {
                 block.y++;
                 return true;
@@ -339,7 +459,6 @@ define([], function () {
                 newOrientation = (block.orientation + 1) % this.orientationCount;
             if (self.checkCollision(block.x, block.y, block.TypeIndex, newOrientation)) {
                 block.orientation = newOrientation;
-                console.log("new orientation", newOrientation);
             }
         },
 
@@ -353,40 +472,23 @@ define([], function () {
 
         checkCollision: function (newX, newY, blockType, orientation) {
             var x, y, pieces = this.blocks[blockType]['orientations'][orientation],
-                rowOutOfBounds = false,
-                debug = (newY + 5 > this.WellHeight );
+                rowOutOfBounds = false;
 
-//            if (debug) {
-//                console.log("CheckCollision at nX:", newX, ', nY:', newY);
-//            }
             for (var j = pieces.length - 1; j >= 0; j--) {
                 y = newY + j;
-                rowOutOfBounds = (y >= this.Well.length);
-//                if (debug) {
-//                    console.log("   check row ", j, "values=", pieces[j]);
-//                    if (rowOutOfBounds)
-//                        console.log("   WellRow out of bounds", y);
-//                    else
-//                        console.log("   WellRow index ", y, this.Well[y]);
-//                }
+                rowOutOfBounds = (y >= this.Well.length||y<0);
                 for (var i = 0; i < pieces[j].length; i++) {
                     x = newX + i;
-                    if (pieces[j][i] > 0) {
+                    if (pieces[i][j] > 0) {
                         if (rowOutOfBounds) {
-//                            console.log("BOOM!!!!",j,i);
                             return false;
                         }
                         if (x < 0 || x >= this.WellWidth) {
-//                            console.log("BAM!!!!",j,i);
                             return false;
                         }
                         if (this.Well[y][x] != 0) {
-//                            console.log("Hit existing block at ",y,x,"with piece square",j,i);
                             return false;
                         }
-
-//
-//                        this.Well[j + y][i + x] = 1;
                     }
                 }
             }

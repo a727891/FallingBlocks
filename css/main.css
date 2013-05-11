@@ -92,10 +92,17 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-.canvas{
-    position: absolute;
-    left: 2em;
-    top: 2em;
+
+#canvas{
+    /*position: absolute;*/
+    /*left: 2em;*/
+    /*top: 2em;*/
+    background: #6e030f;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding:3px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 

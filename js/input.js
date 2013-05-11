@@ -74,9 +74,9 @@ define([], function () {
                     case self.keyboard.RIGHT:
                         this.RightFlag = true;
                         break;
-                    case self.keyboard.N:
-                        self.app.game.ActiveBlock.TypeIndex = ++self.app.game.ActiveBlock.TypeIndex % 7;
-                        break;
+//                    case self.keyboard.N:
+//                        self.app.game.ActiveBlock.TypeIndex = ++self.app.game.ActiveBlock.TypeIndex % 7;
+//                        break;
                     case self.keyboard.SPACE:
                     case self.keyboard.S:
                     case self.keyboard.DOWN:

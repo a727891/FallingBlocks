@@ -5,7 +5,8 @@ load:
 - js/lib/class.js
 
 test:
-- test/*.js
+#- test/*.js
+- test/TestGame.js
 
 serve:
 - js/main.js
