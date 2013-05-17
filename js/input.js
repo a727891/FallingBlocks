@@ -18,6 +18,7 @@ define([], function () {
             this.keyboard.S = 83;
             this.keyboard.D = 68;
             this.keyboard.N = 78;
+            this.keyboard.Q = 81;
             this.keyboard.ENTER = 13;
             this.keyboard.ESC = 27;
             this.keyboard.SPACE = 32;
@@ -26,6 +27,7 @@ define([], function () {
             this.LeftFlag = false;
             this.RightFlag = false;
             this.FallFlag = false;
+            this.InstaDropFlag = false;
 
         },
 
@@ -34,26 +36,28 @@ define([], function () {
                 Rotate: this.RotateFlag,
                 Left: this.LeftFlag,
                 Right: this.RightFlag,
-                Fall: this.FallFlag
+                Fall: this.FallFlag,
+                InstaDrop: this.InstaDropFlag,
             };
             this.resetFlags();
             return ret;
         },
 
-        resetFlags: function(){
+        resetFlags: function () {
             this.RotateFlag = false;
             this.LeftFlag = false;
             this.RightFlag = false;
             this.FallFlag = false;
+            this.InstaDropFlag = false;
         },
 
         parseInput: function (event) {
             var self = this;
             if (this.app.isStopped) {
-                if (event.keyCode == self.keyboard.SPACE){
+                if (event.keyCode == self.keyboard.SPACE) {
                     self.app.start();
                     return true;
-                }else{
+                } else {
                     return false
                 }
             } else {
@@ -82,9 +86,13 @@ define([], function () {
                     case self.keyboard.DOWN:
                         this.FallFlag = true;
                         break;
+                    case self.keyboard.Q:
+                        this.InstaDropFlag = true;
+                        break;
                     case self.keyboard.ESC:
                         self.app.stop();
                         break;
+
                 }
                 return true;
 

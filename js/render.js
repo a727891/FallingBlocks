@@ -50,9 +50,11 @@ define([], function () {
                     self.drawScore(self.game.points, self.game.level, self.game.linesCleared, self.game.linesUntilNextLevel);
                 } else {
                     self.drawWell();
-                    if (self.game.State == self.game.running)
-                        self.drawBlock(self.game.ActiveBlock, true);
-                    self.drawBlock(self.game.NextBlock, false);
+                    if (self.game.State == self.game.running) {
+                        self.drawBlock(self.game.ActiveBlock, 0);
+                        self.drawBlock(self.game.shadowBlock, 2);
+                    }
+                    self.drawBlock(self.game.NextBlock, 1);
                     self.drawScore(self.game.points, self.game.level, self.game.linesCleared, self.game.linesUntilNextLevel);
                 }
             } else {
@@ -96,17 +98,26 @@ define([], function () {
 
         },
 
-        drawBlock: function (block, isActive) {
+        /**
+         *
+         * @param block
+         * @param state 0:ActiveBlock;1:NextBlock;2:shadowBlock
+         */
+        drawBlock: function (block, state) {
             var matrix = this.game.blocks[block.TypeIndex]['orientations'][block.orientation],
                 color = this.game.blocks[block.TypeIndex]['color'],
                 y = 0,
                 x = 0;
             for (var j = 0; j < matrix.length; j++) {
-                y = ((block.y + j ) * this.TileHeight) + (!isActive ? this.NextBlockTop : 0);
+                y = ((block.y + j ) * this.TileHeight) + (state == 1 ? this.NextBlockTop : 0);
                 for (var i = 0; i < matrix[j].length; i++) {
-                    x = ((block.x + i ) * this.TileWidth) + (!isActive ? this.NextBlockLeft : 0);
+                    x = ((block.x + i ) * this.TileWidth) + (state == 1 ? this.NextBlockLeft : 0);
+
                     if (matrix[i][j] > 0)
-                        this.drawTile(x, y, color);
+                        if (state != 2)
+                            this.drawTile(x, y, color);
+                        else
+                            this.drawTile(x, y, color, true);
                     else if (this.Debug_Collision) {
                         this.drawTile(x, y, this.Debug_Collision_Color);
                     }
@@ -120,16 +131,30 @@ define([], function () {
          * @param y Canvas Y pixel
          * @param CellColor Game.Well status
          */
-        drawTile: function (x, y, CellColor) {
+        drawTile: function (x, y, CellColor, shadow) {
+            shadow = shadow | 0;
             this.context.save();
             if (CellColor) {
                 this.context.fillStyle = CellColor;
             }
-            this.context.fillRect(
-                x + this.WellOffsetLeft + this.CellSpacing,
-                y + this.WellOffsetTop + this.CellSpacing,
-                this.TileWidth - this.CellSpacing, this.TileHeight - this.CellSpacing);
+            if (shadow) {
+                this.context.strokeStyle = CellColor;
+                this.context.beginPath();
+                this.context.arc(
+                    x + this.WellOffsetLeft +this.TileWidth/2,//+ this.shadowBorder,
+                    y + this.WellOffsetTop +this.TileHeight/2,// + this.shadowBorder,
+                    Math.floor((this.TileWidth - this.CellSpacing)/2),
+                    0, Math.PI * 2, true
+                );
+                this.context.closePath();
+                this.context.stroke();
+            } else
+                this.context.fillRect(
+                    x + this.WellOffsetLeft + this.CellSpacing,
+                    y + this.WellOffsetTop + this.CellSpacing,
+                    this.TileWidth - this.CellSpacing, this.TileHeight - this.CellSpacing);
             this.context.restore();
+
 
         },
 
@@ -140,7 +165,6 @@ define([], function () {
             this.context.fillText("Lines cleared:" + linesCleared, this.ScoreLeft, this.ScoreTop + 10);
             this.context.fillText("Level:" + level, this.ScoreLeft, this.ScoreTop + 20);
             this.context.fillText("Lines to next:" + linesUntilNext, this.ScoreLeft, this.ScoreTop + 30);
-
             this.context.restore();
         },
 
