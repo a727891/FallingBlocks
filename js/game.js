@@ -18,6 +18,8 @@ define([], function () {
             this.DropBlockFramesToWait = 60;
             this.DeleteRowFramesPerCell = 5;
 
+            //TODO: Rework the default orientation of the blocks (I did the mirror over y=-x bug with the arrays again)
+            //TODO: check the s and z orientations, one of the verticals mirrors the other piece.
             /**
              * Contains block definition
              * color: render color
@@ -358,6 +360,7 @@ define([], function () {
         },
 
         UpdateScore: function (RowsCleared) {
+            //TODO: Add points for soft drops and hard drops.
 //            this.pointsPerLine = [0,100,200,300,400];
 //            this.linesPerLevel = [2,10,20,40,60];
 //            this.pointsPerLevelMultiplier = 2;

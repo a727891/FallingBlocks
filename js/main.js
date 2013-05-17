@@ -5,7 +5,7 @@ define(['jquery', 'lib/class', 'app', 'game', 'input', 'render' ],
 
         var initApp = function () {
             $(document).ready(function () {
-
+                //TODO: Create an intro animation, maybe an end game animation
 //                console.info("Create a new app instance...");
                 app = new App();
                 FallingBlocksApp = app;
