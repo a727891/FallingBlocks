@@ -86,8 +86,7 @@ define([], function () {
 
         drawWell: function (ignoreRealWell) {
             ignoreRealWell = ignoreRealWell || 0;
-            //Hide the top 2 rows
-            for (var j = 2; j < this.game.WellHeight; j++) {
+            for (var j = this.game.WellIgnoredRows; j < this.game.WellHeight; j++) {
                 for (var i = 0; i < this.game.WellWidth; i++) {
                     this.drawTile(
                         i * this.TileWidth,

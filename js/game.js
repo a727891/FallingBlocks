@@ -9,7 +9,7 @@ define([], function () {
 
             this.deleteRow = [];
             this.deleteRowCnt = 0;
-            this.WellIgnoredRows = 2;
+            this.WellIgnoredRows = 3;
             this.WellWidth = 10;
             this.WellHeight = 20 + this.WellIgnoredRows; //Top two rows will not be rendered
 
@@ -18,16 +18,15 @@ define([], function () {
             this.DropBlockFramesToWait = 60;
             this.DeleteRowFramesPerCell = 5;
 
-            //TODO: Rework the default orientation of the blocks (I did the mirror over y=-x bug with the arrays again)
-            //TODO: check the s and z orientations, one of the verticals mirrors the other piece.
             /**
              * Contains block definition
+             * Note: I did the mirror over y=-x bug with the arrays again
              * color: render color
              * orientation[0-3]: collision detection of pieces
              * @type {Array}
              */
             this.blocks = [
-                //Square (o)
+                //Square (o) yellow
                 {color: '#fdfd01', orientations: [
                     [
                         [0, 0, 0, 0, 0],
@@ -58,8 +57,15 @@ define([], function () {
                         [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Tee (t)
+                //Tee (t) purple
                 {color: '#A901FD', orientations: [
+                    [
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 2, 1, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
                     [
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0],
@@ -80,17 +86,17 @@ define([], function () {
                         [0, 1, 2, 1, 0],
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 2, 1, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Line (i)
+                //Line (i) teal
                 {color: '#00fdfd', orientations: [
+                    [
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 2, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
                     [
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0],
@@ -111,26 +117,12 @@ define([], function () {
                         [1, 1, 2, 1, 0],
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 2, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Zr (z)
+                //Zr (z) red
                 {color: '#fd0101', orientations: [
                     [
                         [0, 0, 0, 0, 0],
-                        [0, 1, 1, 0, 0],
-                        [0, 0, 2, 1, 0],
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
                         [0, 0, 0, 1, 0],
                         [0, 0, 2, 1, 0],
                         [0, 0, 1, 0, 0],
@@ -149,43 +141,57 @@ define([], function () {
                         [0, 1, 2, 0, 0],
                         [0, 1, 0, 0, 0],
                         [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
+                        [0, 1, 1, 0, 0],
+                        [0, 0, 2, 1, 0],
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Zl (s)
+                //Zl (s) green
                 {color: '#00fd01', orientations: [
                     [
                         [0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0],
-                        [0, 1, 2, 0, 0],
-                        [0, 0, 1, 1, 0],
-                        [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
-                        [0, 1, 0, 0, 0],
-                        [0, 1, 2, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 1, 1, 0],
-                        [0, 1, 2, 0, 0],
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
                         [0, 0, 1, 0, 0],
                         [0, 0, 2, 1, 0],
                         [0, 0, 0, 1, 0],
                         [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 2, 1, 0],
+                        [0, 1, 1, 0, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
+                        [0, 1, 0, 0, 0],
+                        [0, 1, 2, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 1, 1, 0],
+                        [0, 1, 2, 0, 0],
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Lr (l)
+                //Lr (l) orange
                 {color: '#fda401', orientations: [
                     [
                         [0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 2, 0, 0],
+                        [0, 0, 1, 1, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0],
                         [0, 1, 2, 1, 0],
                         [0, 1, 0, 0, 0],
@@ -204,19 +210,19 @@ define([], function () {
                         [0, 1, 2, 1, 0],
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 2, 0, 0],
-                        [0, 0, 1, 1, 0],
-                        [0, 0, 0, 0, 0]
                     ]
                 ]},
-                //Ll (j)
+                //Ll (j) blue
                 {color: '#0001fd', orientations: [
                     [
                         [0, 0, 0, 0, 0],
+                        [0, 0, 1, 1, 0],
+                        [0, 0, 2, 0, 0],
+                        [0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0]
+                    ],
+                    [
+                        [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0],
                         [0, 1, 2, 1, 0],
                         [0, 0, 0, 1, 0],
@@ -235,15 +241,8 @@ define([], function () {
                         [0, 1, 2, 1, 0],
                         [0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0]
-                    ],
-                    [
-                        [0, 0, 0, 0, 0],
-                        [0, 0, 1, 1, 0],
-                        [0, 0, 2, 0, 0],
-                        [0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0]
                     ]
-                ]},
+                ]}
             ];
             this.blockCount = this.blocks.length;
             this.orientationCount = 4;
@@ -265,9 +264,9 @@ define([], function () {
 
             this.State = this.running;
 
-            this.DropFramesPerLevel = [60,50,40,35,30,30,30,25,25,20,10];
+            this.DropFramesPerLevel = [60, 50, 40, 35, 30, 30, 30, 25, 25, 20, 10];
             this.pointsPerLine = [0, 100, 200, 300, 400];
-            this.linesPerLevel = [5,10,20,35,55,80,110,145,180,220,500];
+            this.linesPerLevel = [5, 10, 20, 35, 55, 80, 110, 145, 180, 220, 500];
             this.pointsPerLevelMultiplier = 2;
             this.level = 0;
             this.linesCleared = 0;
@@ -294,6 +293,11 @@ define([], function () {
 
             switch (this.State) {
                 case this.running:
+                    //Add a drop to the transformation to apply gravity
+                    if(this.FramesSinceLastAction >= this.DropBlockFramesToWait){
+                        input.Fall = true;
+                        this.FramesSinceLastAction = 0;
+                    }
                     if (!this.performBlockOperations(this.ActiveBlock, input)) {
                         //Block cannot fall any farther
                         if (this.lockBlock(this.ActiveBlock)) {
@@ -368,9 +372,9 @@ define([], function () {
 //            this.linesUntilNextLevel = this.linesPerLevel[this.level+1]-this.linesCleared;
 //            this.points = 0;
             this.linesCleared += RowsCleared;
-            var multiplier = (this.pointsPerLevelMultiplier*this.level)|1;
-            this.points += (this.pointsPerLine[RowsCleared]*multiplier);
-            if(this.linesCleared >= this.linesPerLevel[this.level] && (this.linesPerLevel.length >= this.level+1)){
+            var multiplier = (this.pointsPerLevelMultiplier * this.level) | 1;
+            this.points += (this.pointsPerLine[RowsCleared] * multiplier);
+            if (this.linesCleared >= this.linesPerLevel[this.level] && (this.linesPerLevel.length >= this.level + 1)) {
                 this.level++;
                 this.DropBlockFramesToWait = this.DropFramesPerLevel[this.level];
             }
@@ -391,7 +395,7 @@ define([], function () {
         calculateShadowBlock: function (block) {
             var cont = true;
             while (cont) {
-                cont = this.performBlockOperations(block, {Rotate: false, Left: false, Right: false, Fall: true, InstaDrop:false});
+                cont = this.performBlockOperations(block, {Rotate: false, Left: false, Right: false, Fall: true, InstaDrop: false});
             }
 
             this.needToCalcShadowBlock = false;
@@ -400,7 +404,7 @@ define([], function () {
         performBlockOperations: function (block, input) {
             var X = block.x, Y = block.y, O = block.orientation;
 
-            if(input.InstaDrop){
+            if (input.InstaDrop) {
                 this.ActiveBlock.x = this.shadowBlock.x;
                 this.ActiveBlock.y = this.shadowBlock.y;
                 return false;
@@ -421,10 +425,13 @@ define([], function () {
                 this.needToCalcShadowBlock = true;
             }
 
-            //Wait for correct delay before lowering the current block
-            if (input.Fall == true || this.FramesSinceLastAction >= this.DropBlockFramesToWait) {
+            //calculate shadow block used input.fall to find the lowest location
+            //due to frameSinceLastAction reset, this caused the infinity spin or move.
+            //Moved DropFramesToWait check to UpdateState()
+            ////Wait for correct delay before lowering the current block
+            if (input.Fall == true){// || this.FramesSinceLastAction >= this.DropBlockFramesToWait) {
                 Y += 1;
-                this.FramesSinceLastAction = 0;
+//                this.FramesSinceLastAction = 0;
             }
             //Try user requested transformation
             if (this.checkCollision(X, Y, block.TypeIndex, O)) {
@@ -489,7 +496,7 @@ define([], function () {
             this.blockHistory.shift();
             return  {
                 x: Math.floor((this.WellWidth - 1) / 2) - 2,
-                y: -2,
+                y: -1,
                 TypeIndex: newType,
 //                TypeIndex: 2,
                 orientation: 0,
