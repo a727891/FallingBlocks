@@ -1,5 +1,5 @@
 (function () {
-    var app, game, input, renderer;
+    var app, game, input, renderer,swipe;
     var canvas = document.createElement('canvas');
     canvas.id = 'AppCanvas';
     canvas.width = window.innerWidth;
@@ -12,7 +12,8 @@
         //TODO: Create an intro animation, maybe an end game animation
         app = new App();
         game = new Game();
-        input = new Input(app);
+        swipe = new Swipe();
+        input = new Input(app,swipe);
         renderer = new Renderer(game, canvas);
         app.setObjects(game, input, renderer);
         renderer.render(true);

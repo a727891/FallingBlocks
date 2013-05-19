@@ -5,8 +5,8 @@ var Renderer = Class.extend({
         this.context = this.canvas.getContext('2d');
         this.context.font = '16px Arial';
 
-        this.TileWidth = Math.floor((window.innerWidth * .9) / (this.game.WellWidth + 5));//16;
-        this.TileHeight = Math.floor((window.innerHeight * .8) / (this.game.WellHeight + 1));//16;
+        this.TileWidth = Math.floor((window.innerWidth *.9) / (this.game.WellWidth + 5));//16;
+        this.TileHeight = Math.floor((window.innerHeight) / (this.game.WellHeight + 1));//16;
         var min = Math.min(this.TileHeight, this.TileWidth);
         this.TileHeight = min;
         this.TileWidth = min;
@@ -38,7 +38,7 @@ var Renderer = Class.extend({
             if (isStopped) {
                 self.drawWell(1);
                 msg = "Game Paused.";
-                msg2 = "Tap P/P to begin";
+                msg2 = "Swipe [UP] to begin";
                 self.printMessage(msg, msg2);
                 self.drawScore(self.game.points, self.game.level, self.game.linesCleared, self.game.linesUntilNextLevel);
             } else {
@@ -52,23 +52,10 @@ var Renderer = Class.extend({
             }
         } else {
             msg = "Game Over.";
-            msg2 = "Tap P/P to play again";
+            msg2 = "Swipe [UP] to play again";
             self.printMessage(msg, msg2);
 
         }
-////        this.context.fillStyle = 'white';
-////        this.context.fillRect(0,300,100,100);
-//            this.context.save();
-//            this.context.fillStyle = 'red';
-//            this.context.fillRect(0,this.canvas.height *.8,this.canvas.width/2,this.canvas.height *.2);
-//            this.context.fillStyle = 'green';
-//            this.context.fillRect(this.canvas.width/2,this.canvas.height *.8,this.canvas.width/2,this.canvas.height *.2);
-//            this.context.fillStyle = 'yellow';
-//            this.context.fillRect(this.canvas.width *.7,this.canvas.height *.5,this.canvas.width *.3,this.canvas.height *.3);
-//
-//
-////            this.context.fillText('LEFT');
-//            this.context.restore();
     },
 
     printMessage: function (msg, msg2) {

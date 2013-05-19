@@ -327,7 +327,6 @@ var Game = Class.extend({
                 break;
             case this.deletingRow:
                 if (this.FramesSinceLastAction >= this.DeleteRowFramesPerCell) {
-                    navigator.vibrate(15 * this.DeleteRowFramesPerCell);
                     //Still deleting the scored rows
                     var i, j;
                     if (this.deleteRowCnt < this.WellWidth) {
@@ -479,6 +478,7 @@ var Game = Class.extend({
             if (checkRow) {
                 this.deleteRow.push(y);
                 TransitionToDelete = true;
+
             }
         }
         return TransitionToDelete;
