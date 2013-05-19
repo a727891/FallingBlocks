@@ -2,24 +2,36 @@ var Input = Class.extend({
 
     init: function (APP) {
         this.app = APP;
-
+        var self = this;
         this.RotateFlag = false;
         this.LeftFlag = false;
         this.RightFlag = false;
         this.FallFlag = false;
         this.InstaDropFlag = false;
 
-//            var el = document.getElementsByTagName("canvas")[0];
-//            this.CanvasCenter = el.width / 2;
-//            this.Canvas80H = el.height * .8;
-//            this.Canvas50H = el.height * .5;
-//            this.Canvas70W = el.width * .7;
-//            this.Canvas30W = el.width * .3;
-//            el.addEventListener("touchstart", this.touchStart.bind(this), false);
-////            el.addEventListener("touchstart", this.startTouch.bind(this), false);
-//            el.addEventListener("touchend", this.touchEnd.bind(this), false);
-//            el.addEventListener("touchmove", this.touchMove.bind(this), false);
-        this.attachImages();
+        var el = document.getElementsByTagName("canvas")[0];
+        var swipe = new Swipe();
+        swipe.bindTouchToElement('AppCanvas');
+        swipe.bindCallback('left',function(){
+           self.LeftFlag = true;
+        });
+        swipe.bindCallback('right',function(){
+           self.RightFlag = true;
+        });
+        swipe.bindCallback('down',function(){
+           self.InstaDropFlag = true;
+        });
+        swipe.bindCallback('tap',function(){
+           self.RotateFlag = true;
+        });
+        swipe.bindCallback('up',function(){
+            if (self.app.isStopped) {
+                self.app.start();
+            } else {
+                self.app.stop();
+            }
+        });
+//        this.attachImages();
 
     },
     attachImages: function () {
@@ -31,8 +43,8 @@ var Input = Class.extend({
                 {pic: 'Down.png', flag: 'Fall'},
                 {pic: 'PP.png', flag: 'Pause'}
             ], newImg, self = this,
-            canvas = document.getElementsByTagName("canvas")[0];
-        Canvas20H = canvas.height * .2,
+            canvas = document.getElementsByTagName("canvas")[0],
+            Canvas20H = canvas.height * .2,
             Canvas20W = Math.floor(canvas.width / images.length),
             imgsize = Math.min(Canvas20H, Canvas20W);
         for (var i = 0; i < images.length; i++) {
@@ -75,6 +87,7 @@ var Input = Class.extend({
                 break;
         }
     },
+
     readInput: function () {
         var ret = {
             Rotate: this.RotateFlag,

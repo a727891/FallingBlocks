@@ -1,6 +1,7 @@
 (function () {
     var app, game, input, renderer;
     var canvas = document.createElement('canvas');
+    canvas.id = 'AppCanvas';
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     document.body.appendChild(canvas);
