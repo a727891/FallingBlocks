@@ -3,7 +3,14 @@ ini_set('auto_detect_line_endings',true);
 $src = "";
 
 $files = array("../README.md",
-    "../src/main.js",
+    "../src/Shims.js",
+    "../src/Class.js",
+    "../src/Intro.js",
+    "../src/App.js",
+    "../src/Game.js",
+    "../src/Input.js",
+    "../src/Render.js",
+    "../src/Outro.js",
 );
 
 foreach($files as $file) {
